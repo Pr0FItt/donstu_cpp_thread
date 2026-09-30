@@ -1,7 +1,13 @@
 #pragma once
 
+#include <condition_variable>
+#include <future>
+#include <string>
+#pragma once
+
 #include <string>
 #include <mutex>
+#include <condition_variable>
 #include <fstream>
 #include <atomic>
 
@@ -35,10 +41,14 @@ private:
 };
 
 // function for thread
-void funcThread(const ThreadArgs& args, Logger& logger);
+void funcThread(const ThreadArgs& args, Logger& logger, std::promise<std::string> resultPromise);
 
 // get system TID for current linux thread
 pid_t getThreadID();
 
 // healline of software
 void about();
+
+// producer-consumer
+void producer(Logger& logger, int count);
+void consumer(Logger& logger);

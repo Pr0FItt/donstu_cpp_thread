@@ -27,17 +27,45 @@ int main() {
 	args[i].tag = oss.str();
   }
 
-  // thread are starting
+
+//futures and promises
+  std::vector<std::promise<std::string>> promises(COUNT_THREADS);
+  std::vector<std::future<std::string>> futures;
+  futures.reserve(COUNT_THREADS);
+  for (int i = 0; i < COUNT_THREADS; ++i) {
+	futures.push_back(promises[i].get_future());
+  }
+
   std::vector<std::thread> threads;
   threads.reserve(COUNT_THREADS);
+  for (int i = 0; i < COUNT_THREADS; ++i) {
+	threads.emplace_back(
+		funcThread,
+		std::cref(args[i]),
+		std::ref(logger),
+		std::move(promises[i])
+	);
+  }
+
+  for (auto& t : threads) {
+	if (t.joinable()) t.join();
+  }
 
   for (int i = 0; i < COUNT_THREADS; ++i) {
-    threads.emplace_back(funcThread, std::cref(args[i]), std::ref(logger));
+	std::cout << "main: thread " << i
+		<< " back: " << futures[i].get() << "\n";
   }
 
   // wait for stop all threads
   for (auto& t : threads) {
     if (t.joinable()) t.join();
+  }
+
+  {
+	std::thread prod(producer, std::ref(logger), 10);
+	std::thread cons(consumer, std::ref(logger));
+	prod.join();
+	cons.join();
   }
   
   std::cout << "final g_counter = " << g_counter
