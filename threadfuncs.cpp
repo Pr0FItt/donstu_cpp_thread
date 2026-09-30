@@ -8,6 +8,8 @@
 //#include <windows.h>
 #include <sys/types.h>
 
+std::atomic<int> g_counter{0};
+
 Logger::Logger(const std::string& filename)
   : file_(filename, std::ios::out | std::ios::trunc)
 {
@@ -56,8 +58,11 @@ void funcThread(const ThreadArgs& args, Logger& logger) {
 		<< ": failed to write log line, stopping loop\n";
 	break;
    }
-
+	
     // imitation of useful work
     std::this_thread::sleep_for(std::chrono::milliseconds(100));
   }
+	for (int i = 0; i < 100000; ++i) {
+		++g_counter;
+	}
 }

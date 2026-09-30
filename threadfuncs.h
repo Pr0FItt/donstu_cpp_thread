@@ -3,10 +3,12 @@
 #include <string>
 #include <mutex>
 #include <fstream>
+#include <atomic>
 
 // count of threads and iterations
 constexpr int COUNT_THREADS    = 4;
 constexpr int COUNT_ITERATIONS = 3;
+extern std::atomic<int> g_counter;
 
 // args for thread
 struct ThreadArgs {

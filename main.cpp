@@ -39,7 +39,9 @@ int main() {
   for (auto& t : threads) {
     if (t.joinable()) t.join();
   }
-
+  
+  std::cout << "final g_counter = " << g_counter
+		<< " (expected " << COUNT_THREADS * 100000 << ")\n";
   // close file automatically
   logger.writeLine("main: all threads finished, file closed\n");
   return 0;
