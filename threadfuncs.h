@@ -21,7 +21,7 @@ public:
   ~Logger();
 
   // write line with mutex
-  void writeLine(const std::string& msg);
+  bool writeLine(const std::string& msg);
 
   // block copy and move
   Logger(const Logger&)            = delete;
